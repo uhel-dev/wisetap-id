@@ -8,6 +8,7 @@ interface QRCodeEntity {
     redirectUrl: string,
     baseUrl: string,
     registered: boolean;
+    encodedImageUrl: string;
 }
 
 export default function ListQRCodes() {
@@ -51,7 +52,7 @@ export default function ListQRCodes() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to insert QR code');
+                throw new Error('Failed to list QR codes');
             }
 
             return await response.json();
@@ -108,6 +109,9 @@ export default function ListQRCodes() {
                                     <th scope="col" className="px-6 py-3">
                                         Registered
                                     </th>
+                                    <th>
+                                        QR Code
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -119,7 +123,7 @@ export default function ListQRCodes() {
                                                 {qrcode.id}
                                             </th>
                                             <td className="px-6 py-4">
-                                                {qrcode.redirectUrl}
+                                                {qrcode.redirectUrl ? qrcode.redirectUrl : "None"}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <Link href={qrcode.baseUrl}>
@@ -129,13 +133,20 @@ export default function ListQRCodes() {
                                             <td className="px-6 py-4">
                                                 {qrcode.registered}
                                             </td>
+                                            <td>
+                                                <Link href={qrcode.encodedImageUrl} target="_blank">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                        <path d="M11.362 2c4.156 0 2.638 6 2.638 6s6-1.65 6 2.457v11.543h-16v-20h7.362zm.827-2h-10.189v24h20v-14.386c0-2.391-6.648-9.614-9.811-9.614zm-5.189 12.5c0-.828.672-1.5 1.501-1.5.827 0 1.499.672 1.499 1.5s-.672 1.5-1.499 1.5c-.829 0-1.501-.672-1.501-1.5zm6.5.5l-2.093 2.968-1.31-.968-3.097 4h10l-3.5-6z"/>
+                                                    </svg>
+                                                </Link>
+                                            </td>
                                         </tr>
                                     )
                                 })}
-                                { qrcodes && qrcodes.length === 0 && (
+                                {qrcodes && qrcodes.length === 0 && (
                                     <>
                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <td colSpan={4}>No entries</td>
+                                        <td colSpan={4}>No entries</td>
                                         </tr>
                                     </>
                                 )}
@@ -147,7 +158,7 @@ export default function ListQRCodes() {
                 </div>
 
                 <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-5 lg:text-left">
-                    <a
+                    <Link
                         href=""
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
@@ -162,9 +173,9 @@ export default function ListQRCodes() {
                         <p className="m-0 max-w-[30ch] text-sm opacity-50">
                             Find QR code by <span className={`text-gray-95000`}>id</span>.
                         </p>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/create-qr-code"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
@@ -179,9 +190,9 @@ export default function ListQRCodes() {
                         <p className="m-0 max-w-[30ch] text-sm opacity-50">
                             Create new QR code.
                         </p>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/list-qr-codes"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
@@ -196,9 +207,9 @@ export default function ListQRCodes() {
                         <p className="m-0 max-w-[30ch] text-sm opacity-50">
                             List all QR codes.
                         </p>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
@@ -213,9 +224,9 @@ export default function ListQRCodes() {
                         <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
                             Generate <strong>QR</strong> image.
                         </p>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/set"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
@@ -230,7 +241,7 @@ export default function ListQRCodes() {
                         <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
                             Assign <strong>redirect</strong> to QR.
                         </p>
-                    </a>
+                    </Link>
                 </div>
 
             </main>

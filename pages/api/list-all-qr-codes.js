@@ -40,8 +40,8 @@ export default async function handler(req, res) {
                     code: row.code,
                     redirectUrl: row.redirect_url,
                     baseUrl: `https://id.wisetap.co.uk/${row.code}`,
-                    registered: `${row.registered ? 'Registered' : 'Free'}`
-
+                    registered: `${row.registered ? 'Registered' : 'Free'}`,
+                    encodedImageUrl: row.encoded_qr_image
                 }
             })
             return res.status(200).send(data);
