@@ -41,7 +41,7 @@ const RedirectPage = () => {
     else if(!registered) {
         return <NotRegisteredComponent id={router.query.id} callHandleRedirectRegister={handleRedirectRegister}/>;
     }
-    return <p>Redirecting...</p>;
+    // return <p>Redirecting...</p>;
 };
 
 export default RedirectPage;
