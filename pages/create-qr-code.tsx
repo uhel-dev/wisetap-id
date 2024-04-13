@@ -9,29 +9,34 @@ import Image from "next/image";
 export default function CreateQRCode() {
     const [qrValue, setQrValue] = useState('');
     const [qrUniqueId, setQrUniqueId] = useState('');
+    const [qrUrl, setQrUrl] = useState('')
     const { Canvas } = useQRCode();
 
     const generateUniqueQRCode = () => {
         const uniqueID = uuidv4();
-        const baseUrl = "https://id.wisetap.co.uk/";
-        const qrUrl = `${baseUrl}${uniqueID}`;
+        // const baseUrl = "https://id.wisetap.co.uk/manage";
+        // const qrUrl = `${baseUrl}?code=${uniqueID}&track=${uniqueID}`;
+
+        const baseUrl = "https://id.wisetap.co.uk";
+        const qrUrl = `${baseUrl}/${uniqueID}`;
         setQrValue(qrUrl);
+        setQrUrl(qrUrl)
         setQrUniqueId(uniqueID)
-        handleClick(uniqueID).then(res => {
+        handleClick(uniqueID, qrUrl).then(res => {
             console.log(res)
         }).catch(err => {
             console.log(err)
         })
     };
 
-    const handleClick = async (id: string) => {
+    const handleClick = async (id: string, qrUrl: string) => {
         try {
             const response = await fetch('/api/insert-qr-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: id }), // Replace 'your_id_here' with the ID you want to insert
+                body: JSON.stringify({ code: id, encoded: qrUrl }), // Replace 'your_id_here' with the ID you want to insert
             });
 
             if (!response.ok) {
@@ -59,7 +64,6 @@ export default function CreateQRCode() {
                         <a
                             className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
                             href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                            target="_blank"
                             rel="noopener noreferrer"
                         >
                             <Image
@@ -73,7 +77,7 @@ export default function CreateQRCode() {
                         </a>
                     </div>
                 </div>
-                <div>
+                <div className={`flex items-center justify-center`}>
                     <div className={`w-full`}>
                         <h3 className="text-xl font-bold mb-4">Generate Unique QR Code</h3>
                         <div className={`grid grid-cols-2`}>
@@ -84,6 +88,9 @@ export default function CreateQRCode() {
                                 </button>
                                 {qrValue && (
                                     <p>Unique ID: {qrUniqueId}</p>
+                                )}
+                                {qrUrl && qrUrl !== '' && (
+                                    <p>Url: {qrUrl}</p>
                                 )}
                                 {qrValue && (
                                     <div className={`mt-2 p-4 bg-gray-900 w-full`}>
@@ -112,7 +119,6 @@ export default function CreateQRCode() {
                     <a
                         href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                        target="_blank"
                         rel="noopener noreferrer"
                     >
                         <h2 className="mb-3 text-2xl font-semibold">
@@ -130,7 +136,6 @@ export default function CreateQRCode() {
                     <a
                         href="/create-qr-code"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                        target="_blank"
                         rel="noopener noreferrer"
                     >
                         <h2 className="mb-3 text-2xl font-semibold">
@@ -146,9 +151,8 @@ export default function CreateQRCode() {
                     </a>
 
                     <a
-                        href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+                        href="/list-qr-codes"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                        target="_blank"
                         rel="noopener noreferrer"
                     >
                         <h2 className="mb-3 text-2xl font-semibold">
@@ -166,7 +170,6 @@ export default function CreateQRCode() {
                     <a
                         href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                        target="_blank"
                         rel="noopener noreferrer"
                     >
                         <h2 className="mb-3 text-2xl font-semibold">

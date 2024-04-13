@@ -37,8 +37,9 @@ export default async function handler(req, res) {
                 return {
                     ...row,
                     id: row.id,
+                    code: row.code,
                     redirectUrl: row.redirect_url,
-                    baseUrl: `https://id.wisetap.co.uk/${row.id}`,
+                    baseUrl: `https://id.wisetap.co.uk/${row.code}`,
                     registered: `${row.registered ? 'Registered' : 'Free'}`
 
                 }

@@ -3,15 +3,7 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.51">
     <root id="1">
       <DateStyle>mdy</DateStyle>
-      <Grants>1||-9223372036854775808|c|G
-1||10|c|G
-1||10|C|G
-1||10|T|G
-4||-9223372036854775808|c|G
-4||10|c|G
-4||10|C|G
-4||10|T|G
-16389||-9223372036854775808|c|G
+      <Grants>16389||-9223372036854775808|c|G
 16389||16384|c|G
 16389||16387|c|G
 16389||16384|C|G
@@ -19,9 +11,9 @@
 16389||-9223372036854775808|T|G
 16389||16384|T|G
 16389||16387|T|G</Grants>
-      <IntrospectionStateNumber>18434</IntrospectionStateNumber>
+      <IntrospectionStateNumber>25655</IntrospectionStateNumber>
       <ServerVersion>16.2</ServerVersion>
-      <StartupTime>1712956309</StartupTime>
+      <StartupTime>1713018516</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -819,6 +811,7 @@ false Zulu
 13187||10|U|G
 16444||10|C|G
 16444||10|U|G</Grants>
+      <IntrospectionStateNumber>25603</IntrospectionStateNumber>
       <ObjectId>5</ObjectId>
       <OwnerName>cloud_admin</OwnerName>
     </database>
@@ -832,7 +825,7 @@ false Zulu
 13187||10|C|G
 13187||-9223372036854775808|U|G
 13187||10|U|G</Grants>
-      <IntrospectionStateNumber>18434</IntrospectionStateNumber>
+      <IntrospectionStateNumber>25655</IntrospectionStateNumber>
       <ObjectId>16389</ObjectId>
       <OwnerName>default</OwnerName>
     </database>
@@ -5951,13 +5944,21 @@ false Zulu
     <schema id="266" parent="3" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>18434</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2024-04-12.21:12:27</LastIntrospectionLocalTimestamp>
+      <IntrospectionStateNumber>25655</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2024-04-13.14:31:47</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>523</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
-    <sequence id="267" parent="266" name="users_id_seq">
+    <sequence id="267" parent="266" name="qrcodes_id_seq">
+      <DasType>integer|0s</DasType>
+      <ObjectId>90154</ObjectId>
+      <SequenceIdentity>1</SequenceIdentity>
+      <StartValue>1</StartValue>
+      <StateNumber>25654</StateNumber>
+      <OwnerName>default</OwnerName>
+    </sequence>
+    <sequence id="268" parent="266" name="users_id_seq">
       <DasType>integer|0s</DasType>
       <ObjectId>16453</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
@@ -5965,58 +5966,80 @@ false Zulu
       <StateNumber>744</StateNumber>
       <OwnerName>default</OwnerName>
     </sequence>
-    <table id="268" parent="266" name="qrcodes">
-      <ObjectId>40960</ObjectId>
-      <StateNumber>18433</StateNumber>
+    <table id="269" parent="266" name="qrcodes">
+      <ObjectId>90155</ObjectId>
+      <StateNumber>25654</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>default</OwnerName>
     </table>
-    <table id="269" parent="266" name="users">
+    <table id="270" parent="266" name="users">
       <ObjectId>16454</ObjectId>
       <StateNumber>744</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>default</OwnerName>
     </table>
-    <column id="270" parent="268" name="id">
-      <DasType>varchar(200)|0s</DasType>
+    <column id="271" parent="269" name="id">
+      <DasType>integer|0s</DasType>
+      <DefaultExpression>nextval(&apos;qrcodes_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>11264</StateNumber>
-      <TypeId>1043</TypeId>
+      <StateNumber>25654</StateNumber>
+      <SequenceId>90154</SequenceId>
+      <TypeId>23</TypeId>
     </column>
-    <column id="271" parent="268" name="redirect_url">
-      <DasType>varchar|0s</DasType>
+    <column id="272" parent="269" name="code">
+      <DasType>text|0s</DasType>
+      <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>14355</StateNumber>
-      <TypeId>1043</TypeId>
+      <StateNumber>25654</StateNumber>
+      <TypeId>25</TypeId>
     </column>
-    <column id="272" parent="268" name="registered">
+    <column id="273" parent="269" name="redirect_url">
+      <DasType>text|0s</DasType>
+      <Position>3</Position>
+      <StateNumber>25654</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="274" parent="269" name="encoded_qr_image">
+      <DasType>text|0s</DasType>
+      <Position>4</Position>
+      <StateNumber>25654</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="275" parent="269" name="registered">
       <DasType>boolean|0s</DasType>
       <DefaultExpression>false</DefaultExpression>
-      <Position>3</Position>
-      <StateNumber>18433</StateNumber>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>25654</StateNumber>
       <TypeId>16</TypeId>
     </column>
-    <index id="273" parent="268" name="qrcodes_pkey">
-      <ColNames>id</ColNames>
+    <column id="276" parent="269" name="type">
+      <DasType>text|0s</DasType>
+      <Position>6</Position>
+      <StateNumber>25654</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <index id="277" parent="269" name="qrcodes_pkey">
+      <ColNames>code</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>40963</ObjectId>
+      <ObjectId>90162</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>11264</StateNumber>
+      <StateNumber>25654</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="274" parent="268" name="qrcodes_pkey">
+    <key id="278" parent="269" name="qrcodes_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>40964</ObjectId>
+      <ObjectId>90163</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>11264</StateNumber>
-      <UnderlyingIndexId>40963</UnderlyingIndexId>
+      <StateNumber>25654</StateNumber>
+      <UnderlyingIndexId>90162</UnderlyingIndexId>
     </key>
-    <column id="275" parent="269" name="id">
+    <column id="279" parent="270" name="id">
       <DasType>integer|0s</DasType>
       <DefaultExpression>nextval(&apos;users_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
@@ -6025,26 +6048,26 @@ false Zulu
       <SequenceId>16453</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="276" parent="269" name="email">
+    <column id="280" parent="270" name="email">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>744</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="277" parent="269" name="name">
+    <column id="281" parent="270" name="name">
       <DasType>varchar(255)|0s</DasType>
       <Position>3</Position>
       <StateNumber>744</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="278" parent="269" name="username">
+    <column id="282" parent="270" name="username">
       <DasType>varchar(255)|0s</DasType>
       <Position>4</Position>
       <StateNumber>744</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="279" parent="269" name="users_pkey">
+    <index id="283" parent="270" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16460</ObjectId>
@@ -6053,7 +6076,7 @@ false Zulu
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="280" parent="269" name="users_pkey">
+    <key id="284" parent="270" name="users_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16461</ObjectId>
       <Primary>1</Primary>
