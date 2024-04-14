@@ -42,7 +42,7 @@ export default function CreateQRCode() {
                 throw new Error('Failed to insert QR code');
             }
 
-            const data = await response.json();
+            return await response.json();
         } catch (error) {
             console.error('Error:', error);
         }

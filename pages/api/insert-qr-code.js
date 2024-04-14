@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
             const { rows } = await sql`INSERT INTO qrcodes (code, encoded_qr_image) VALUES (${id}, ${base64PNG}) RETURNING id`;
             console.log('Successfully added into DB');
-            return res.status(200).send('Successfully added into DB');
+            return res.status(200).send(JSON.stringify('Successfully added into DB'));
         }
         catch (e) {
             console.log(e);

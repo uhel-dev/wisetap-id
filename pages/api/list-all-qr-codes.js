@@ -37,7 +37,6 @@ export default async function handler(req, res) {
             const { rows } = await sql`SELECT * FROM qrcodes`;
             const data = rows.map(row => {
                 return {
-                    ...row,
                     id: row.id,
                     code: row.code,
                     redirectUrl: row.redirect_url,
@@ -46,7 +45,7 @@ export default async function handler(req, res) {
                     encodedImageUrl: row.encoded_qr_image
                 }
             })
-            return res.status(200).send(data);
+            return res.status(200).send(JSON.stringify(data));
         }
 
 

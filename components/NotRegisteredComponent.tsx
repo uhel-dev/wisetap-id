@@ -1,6 +1,7 @@
 import '../app/globals.css';
 import Image from "next/image";
 import { useRef, useState } from "react";
+import Swal from 'sweetalert2'
 
 export default function NotRegisteredComponent({id, callHandleRedirectRegister}: any) {
     const [registerUser, setRegisterUser] = useState(false);
@@ -36,11 +37,11 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center p-24">
+        <main className="flex min-h-screen flex-col items-center md:p-24">
             <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
                 {/* Header Text */}
                 <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-                    {`Not registered yet? Let's&nbsp;`} <code className="font-mono font-bold">fix</code>&nbsp;it.
+                    {`Not registered yet? Let's`}&nbsp; <code className="font-mono font-bold">fix</code>&nbsp;it.
                 </p>
                 {/* Logo Link */}
                 <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
@@ -51,8 +52,8 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
             </div>
 
             {/* Form */}
-            <div className="flex items-center justify-center w-full p-24">
-                <form className="mx-auto w-1/2" onSubmit={handleSubmit}>
+            <div className="flex items-center justify-center w-full py-24 px-8 md:p-24">
+                <form className="mx-auto md:w-1/2 p-8" onSubmit={handleSubmit}>
                     {/* Redirect URL Input */}
                     <div className="mb-5">
                         <label htmlFor="redirect_url" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">What URL you want to load to customers when they scan your code?</label>
