@@ -19,4 +19,3 @@ create table public.qrcodes
     registered BOOLEAN DEFAULT FALSE NOT NULL,
     type TEXT
 );
-

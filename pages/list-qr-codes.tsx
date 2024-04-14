@@ -146,7 +146,7 @@ export default function ListQRCodes() {
                                 {qrcodes && qrcodes.length === 0 && (
                                     <>
                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <td colSpan={4}>No entries</td>
+                                        <td colSpan={5} className={`text-center p-2`}>Database did not return any codes.</td>
                                         </tr>
                                     </>
                                 )}

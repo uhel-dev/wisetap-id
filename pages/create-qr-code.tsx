@@ -5,6 +5,7 @@ import { useQRCode } from "next-qrcode";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import Link from "next/link";
+import {baseQRUrl} from "@/types";
 
 
 export default function CreateQRCode() {
@@ -15,11 +16,8 @@ export default function CreateQRCode() {
 
     const generateUniqueQRCode = () => {
         const uniqueID = uuidv4();
-        // const baseUrl = "https://id.wisetap.co.uk/manage";
-        // const qrUrl = `${baseUrl}?code=${uniqueID}&track=${uniqueID}`;
 
-        const baseUrl = "https://id.wisetap.co.uk";
-        const qrUrl = `${baseUrl}/${uniqueID}`;
+        const qrUrl = `${baseQRUrl}/${uniqueID}`;
         setQrValue(qrUrl);
         setQrUrl(qrUrl)
         setQrUniqueId(uniqueID)
@@ -91,7 +89,9 @@ export default function CreateQRCode() {
                                     <p>Unique ID: {qrUniqueId}</p>
                                 )}
                                 {qrUrl && qrUrl !== '' && (
-                                    <p>Url: {qrUrl}</p>
+                                    <span>
+                                        Url: <Link href={`/qr/${qrUniqueId}`}>{qrUrl}</Link>
+                                    </span>
                                 )}
                                 {qrValue && (
                                     <div className={`mt-2 p-4 bg-gray-900 w-full`}>
@@ -186,40 +186,6 @@ export default function CreateQRCode() {
                     </Link>
                 </div>
             </main>
-            <section className={`kdev-section`}>
-                <div className={`w-full`}>
-                    <h3 className="text-xl font-bold mb-4">Generate Unique QR Code</h3>
-                    <div className={`grid grid-cols-2`}>
-                        <div>
-                            <button onClick={generateUniqueQRCode}
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
-                                Generate QR Code
-                            </button>
-                            {qrValue && (
-                                <p>Unique ID: {qrUniqueId}</p>
-                            )}
-                            {qrValue && (
-                                <div className={`mt-2 p-4 bg-gray-900 w-full`}>
-                                    <Canvas
-                                        text={qrValue}
-                                        options={{
-                                            errorCorrectionLevel: 'M',
-                                            margin: 3,
-                                            scale: 4,
-                                            width: 200,
-                                            color: {
-                                                dark: '#020225',
-                                                light: '#ffffff',
-                                            },
-                                        }}
-                                    />
-
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </section>
         </>
     )
 }

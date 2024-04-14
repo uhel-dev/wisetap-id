@@ -2,20 +2,13 @@ import { sql } from "@vercel/postgres";
 import QRCode from 'qrcode';
 import { Buffer } from 'buffer';
 import sharp from 'sharp';
+import {baseQRUrl} from "../../types";
 
 export default async function handler(req, res) {
     if (req.body.code) {
         try {
             const id = req.body.code;
-            // const baseUrl = 'https://id.wisetap.co.uk/'
-            // const qrCode = `${baseUrl}/?code=${id}`
-
-            // const baseUrl = "https://id.wisetap.co.uk/manage";
-            // const qrCode = `${baseUrl}?code=${id}&track=${id}`;
-
-            const baseUrl = 'https://id.wisetap.co.uk'
-            const qrCode = `${baseUrl}/${id}`
-
+            const qrCode = `${baseQRUrl}/${id}`
 
             // Generate QR code as data URL
             const qrDataURL = await QRCode.toDataURL(qrCode);
@@ -36,7 +29,7 @@ export default async function handler(req, res) {
 
 
 
-            const { rows } = await sql`INSERT INTO qrcodes (code, encoded_qr_image) VALUES (${id}, ${qr_image}) RETURNING id`;
+            const { rows } = await sql`INSERT INTO qrcodes (code, encoded_qr_image) VALUES (${id}, ${base64PNG}) RETURNING id`;
             console.log('Successfully added into DB');
             return res.status(200).send('Successfully added into DB');
         }

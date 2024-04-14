@@ -1,4 +1,5 @@
 import { sql } from "@vercel/postgres";
+import {baseQRUrl} from "../../types";
 
 
 
@@ -27,7 +28,8 @@ export default async function handler(req, res) {
             return res.status(200).send(rows.map(row => {
                 return {
                     ...row,
-                    full_url: `https://id.wisetap.co.uk/${row.id}`
+                    // full_url: `https://id.wisetap.co.uk/${row.id}`
+                    baseUrl: `${baseQRUrl}/${row.code}`
                 }
             }));
         }
@@ -39,7 +41,7 @@ export default async function handler(req, res) {
                     id: row.id,
                     code: row.code,
                     redirectUrl: row.redirect_url,
-                    baseUrl: `https://id.wisetap.co.uk/${row.code}`,
+                    baseUrl: `${baseQRUrl}/${row.code}`,
                     registered: `${row.registered ? 'Registered' : 'Free'}`,
                     encodedImageUrl: row.encoded_qr_image
                 }

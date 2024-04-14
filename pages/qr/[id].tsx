@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import {useEffect, useState} from "react";
-import NotRegisteredComponent from "../components/NotRegisteredComponent";
+import NotRegisteredComponent from "../../components/NotRegisteredComponent";
 import CodeNotFoundComponent from "@/components/CodeNotFoundComponent";
 
 const RedirectPage = () => {
     const router = useRouter();
-    const [registered, setRegistered] = useState(false)
+    const [registered, setRegistered] = useState(true)
     const [codeNotFound, setCodeNotFound] = useState(false)
 
     const handleRedirectRegister = () => {
