@@ -12,6 +12,7 @@
     "@vercel/postgres": "^0.8.0",
     "canvas": "^2.11.2",
     "dotenv": "^16.4.5",
+    "json2csv": "^6.0.0-alpha.2",
     "next": "14.2.0",
     "next-qrcode": "^2.5.1",
     "qrcode": "^1.5.3",

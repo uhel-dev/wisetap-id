@@ -2,38 +2,41 @@ import '../app/globals.css'
 import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 interface QRCodeEntity {
     id: string,
     redirectUrl: string,
     baseUrl: string,
     registered: boolean;
+    used: boolean;
     encodedImageUrl: string;
 }
 
 export default function ListQRCodes() {
 
-    const MAX_PAGE_SIZE = 25
+    const MAX_PAGE_SIZE = 10
 
     const [qrcodes,setQrcodes] = useState<QRCodeEntity[]>([])
     const [pageableQrcodes, setPageableQrcodes] = useState<QRCodeEntity[]>([])
     const [page, setPage] = useState(0)
+    const [numberOfPages, setNumberOfPages] = useState(0)
+    const [filterRedirectUrlOrder, setFilterRedirectUrlOrder] = useState(true)
 
+
+    const updatePageNumber = (pageNumber: number) => {
+        setPage(pageNumber)
+        setPageableQrcodes(qrcodes.slice(pageNumber * MAX_PAGE_SIZE, (pageNumber + 1) * MAX_PAGE_SIZE));
+    }
 
     useEffect(() => {
         fetchQRCodes().then((r: QRCodeEntity[]) => {
             setQrcodes(r)
             setPageableQrcodes(r.slice(0, MAX_PAGE_SIZE))
+            setNumberOfPages(Math.ceil(r.length / MAX_PAGE_SIZE))
         })
     }, [])
 
-
-    const refreshTable = async () =>  {
-        fetchQRCodes().then((r: QRCodeEntity[]) => {
-            setQrcodes(r)
-            setPageableQrcodes(r.slice(0, MAX_PAGE_SIZE))
-        })
-    }
 
     const fetchQRCodes = async () => {
         try {
@@ -60,6 +63,88 @@ export default function ListQRCodes() {
             console.error('Error:', error);
         }
     };
+
+    const filterByRedirectURL = () => {
+        setFilterRedirectUrlOrder(!filterRedirectUrlOrder)
+        const sortedQRCodes = [...qrcodes].sort((a, b) => {
+            if(filterRedirectUrlOrder) {
+                if (a.redirectUrl === null && b.redirectUrl) return 1;
+                if (a.redirectUrl && b.redirectUrl === null) return -1;
+                if (a.redirectUrl && b.redirectUrl) return 0;
+            }
+            if(!filterRedirectUrlOrder) {
+                if (a.redirectUrl === null && b.redirectUrl) return -1;
+                if (a.redirectUrl && b.redirectUrl === null) return 1;
+                if (a.redirectUrl && b.redirectUrl) return 0;
+            }
+            return a.redirectUrl?.length - b.redirectUrl?.length;
+        });
+        setQrcodes(sortedQRCodes);
+        setPageableQrcodes(sortedQRCodes.slice(page * MAX_PAGE_SIZE, (page + 1) * MAX_PAGE_SIZE));
+    }
+
+    const showExportDialog = () => {
+        Swal.fire({
+            title: "How many codes do you want to export?",
+            input: "number",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Export",
+            showLoaderOnConfirm: true,
+            preConfirm: async (quantity) => {
+             await fetchCSV(quantity)
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+    }
+
+    async function fetchCSV(quantity: number) {
+        try {
+            const backendUrl = `/api/generate-csv?quantity=${quantity}`;
+            const response = await fetch(backendUrl, {
+                method: 'GET', // or 'POST' if your API requires
+                headers: {
+                    'Content-Type': 'application/csv',
+                    'Accept': 'application/csv'
+                }
+            });
+
+            if (!response.ok) {
+                // Handle non-200 responses
+                const errorText = await response.text();
+                return Swal.showValidationMessage(`Request failed with status: ${response.status}, Message: ${errorText}`);
+            }
+            const currentDate = new Date();
+            const day = currentDate.getDate();
+            const month = currentDate.getMonth() + 1;
+            const year = currentDate.getFullYear();
+            const formattedDate = `${day}_${month}_${year}`;
+
+            const fileName = `wisetap-${formattedDate}.csv`
+
+            // Assuming the response is a Blob of type CSV
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            // Optional: Download the CSV file directly in the client
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            return Swal.fire({
+                title: 'Success!',
+                text: 'CSV file has been successfully downloaded.',
+                icon: 'success'
+            });
+        } catch (error) {
+            Swal.showValidationMessage(`Request failed: ${error}`);
+        }
+    }
+
 
     return (
         <>
@@ -93,7 +178,14 @@ export default function ListQRCodes() {
                     <div className={`mt-8 w-full max-w-5xl mx-auto`}>
                         <div className="relative overflow-x-auto">
 
-                            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+                            <div className={`flex justify-end`}>
+                                <div className={`flex gap-2 py-4`}>
+                                       <button onClick={() => showExportDialog()}>Export</button>
+                                </div>
+                            </div>
+
+                            <table
+                                className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
                                 <thead
                                     className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -101,7 +193,7 @@ export default function ListQRCodes() {
                                         ID
                                     </th>
                                     <th scope="col" className="px-6 py-3">
-                                        Redirect URL
+                                        <button onClick={() => filterByRedirectURL()}>Redirect URL</button>
                                     </th>
                                     <th scope="col" className="px-6 py-3">
                                         QR Code Base Url
@@ -115,9 +207,10 @@ export default function ListQRCodes() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {qrcodes && qrcodes.length > 0 && qrcodes.map((qrcode: QRCodeEntity) => {
+                                {qrcodes && qrcodes.length > 0 && pageableQrcodes.map((qrcode: QRCodeEntity) => {
                                     return (
-                                        <tr key={qrcode.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <tr key={qrcode.id}
+                                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <th scope="row"
                                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {qrcode.id}
@@ -133,13 +226,18 @@ export default function ListQRCodes() {
                                             <td className="px-6 py-4">
                                                 {qrcode.registered}
                                             </td>
-                                            <td>
-                                                data:image/png;base64,{qrcode.encodedImageUrl}
-                                                {/*<Link href={qrcode.encodedImageUrl} target="_blank">*/}
-                                                {/*    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">*/}
-                                                {/*        <path d="M11.362 2c4.156 0 2.638 6 2.638 6s6-1.65 6 2.457v11.543h-16v-20h7.362zm.827-2h-10.189v24h20v-14.386c0-2.391-6.648-9.614-9.811-9.614zm-5.189 12.5c0-.828.672-1.5 1.501-1.5.827 0 1.499.672 1.499 1.5s-.672 1.5-1.499 1.5c-.829 0-1.501-.672-1.501-1.5zm6.5.5l-2.093 2.968-1.31-.968-3.097 4h10l-3.5-6z"/>*/}
-                                                {/*    </svg>*/}
-                                                {/*</Link>*/}
+                                            <td className="px-6 py-4">
+                                                <button onClick={() => Swal.fire({
+                                                    title: "Image Source",
+                                                    text: `data:image/png;base64,${qrcode.encodedImageUrl}`,
+                                                    icon: 'info'
+                                                })}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M11.362 2c4.156 0 2.638 6 2.638 6s6-1.65 6 2.457v11.543h-16v-20h7.362zm.827-2h-10.189v24h20v-14.386c0-2.391-6.648-9.614-9.811-9.614zm-5.189 12.5c0-.828.672-1.5 1.501-1.5.827 0 1.499.672 1.499 1.5s-.672 1.5-1.499 1.5c-.829 0-1.501-.672-1.501-1.5zm6.5.5l-2.093 2.968-1.31-.968-3.097 4h10l-3.5-6z"/>
+                                                    </svg>
+                                                </button>
                                             </td>
                                         </tr>
                                     )
@@ -147,18 +245,29 @@ export default function ListQRCodes() {
                                 {qrcodes && qrcodes.length === 0 && (
                                     <>
                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <td colSpan={5} className={`text-center p-2`}>Database did not return any codes.</td>
+                                            <td colSpan={5} className={`text-center p-2`}>Database did not return any
+                                                codes.
+                                            </td>
                                         </tr>
                                     </>
                                 )}
                                 </tbody>
                             </table>
+                            <div className={`flex justify-end`}>
+                                <div className={`flex gap-2 py-4`}>
+                                    {numberOfPages !== 0 && [...Array(numberOfPages)].map((_, index) => (
+                                        <button onClick={() => updatePageNumber(index)}
+                                                className={`border border-black px-2 py-1 ${page === index ? 'bg-black text-white' : ''}`}
+                                                key={index}>{index + 1}</button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
                     </div>
                 </div>
 
-                <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-5 lg:text-left">
+                <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-5 lg:text-left mt-8">
                     <Link
                         href=""
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"

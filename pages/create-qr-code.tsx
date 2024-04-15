@@ -101,7 +101,7 @@ export default function CreateQRCode() {
                                                 errorCorrectionLevel: 'M',
                                                 margin: 3,
                                                 scale: 4,
-                                                width: 200,
+                                                width: 480,
                                                 color: {
                                                     dark: '#020225',
                                                     light: '#ffffff',

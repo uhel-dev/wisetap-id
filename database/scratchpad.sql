@@ -17,5 +17,6 @@ create table public.qrcodes
     redirect_url TEXT,
     encoded_qr_image TEXT,
     registered BOOLEAN DEFAULT FALSE NOT NULL,
+    used BOOLEAN DEFAULT FALSE NOT NULL,
     type TEXT
 );
