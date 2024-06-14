@@ -2,14 +2,18 @@ import '../app/globals.css';
 import Image from "next/image";
 import { useRef, useState } from "react";
 import Swal from 'sweetalert2'
+import Link from "next/link";
 
 export default function NotRegisteredComponent({id, callHandleRedirectRegister}: any) {
     const [registerUser, setRegisterUser] = useState(false);
     const [redirectUrl, setRedirectUrl] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     // const [phoneNumber, setPhoneNumber] = useState(''); // New state for phone number
 
+    const [activeStage, setActiveStage] = useState('stage1');
     const getRequestBody = () => {
         const body = { id, redirectUrl, email, password }
         return JSON.stringify(body)
@@ -31,64 +35,298 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
         });
         const result = await response.text();
         if (response.status === 200) {
+            await sendEmail()
             callHandleRedirectRegister()
         }
-        alert(result);
+        // alert(result);
     };
 
+    const sendEmail = async () => {
+        const response = await fetch('/api/send-welcoming-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                first_name: firstName,
+                qr_code: id
+            }),
+        });
+        if (response.status === 200) {
+            await Swal.fire({
+                title: 'Success',
+                text: 'An email has been sent to you with the details of your account.',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+            })
+        }
+    }
+
+    const nextStage = (event: any, activeStage: string) => {
+        const stageSplit = activeStage.split('')
+        let stageNumber = parseInt(stageSplit[stageSplit.length - 1])
+        if(firstName === '' || lastName === '' ) {
+            setActiveStage('stage1')
+            Swal.fire({
+                title: 'Error',
+                text: 'Please enter your first and last name',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
+        if(email === '' && activeStage !== 'stage1') {
+            setActiveStage('stage2')
+            Swal.fire({
+                title: 'Error',
+                text: 'Please enter your email address',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
+        if(redirectUrl === '' && activeStage !== 'stage2' && activeStage !== 'stage1') {
+            setActiveStage('stage3')
+            Swal.fire({
+                title: 'Error',
+                text: 'Please enter your redirect URL',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
+        if(stageNumber === 3 && firstName !== '' && lastName !== '' && email !== '') {
+            const response = handleSubmit(event)
+            return;
+        }
+        if (stageNumber < 3) {
+            stageNumber += 1
+        }
+        setActiveStage(`stage${stageNumber}`)
+    }
+
+
     return (
-        <main className="flex min-h-screen flex-col items-center md:p-24">
-            <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-                {/* Header Text */}
-                <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-                    {`Not registered yet? Let's`}&nbsp; <code className="font-mono font-bold">fix</code>&nbsp;it.
-                </p>
-                {/* Logo Link */}
-                <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-                    <a className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0" href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app" target="_blank" rel="noopener noreferrer">
-                        <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo" className="dark:invert" width={100} height={24} priority />
-                    </a>
+        <>
+            {/* TABLET / DESKTOP*/}
+            <div
+                className={`hidden md:flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-slate-200 to-slate-100`}>
+                <div
+                    className={`bg-white p-8 rounded-xl min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] flex flex-col gap-8`}>
+                    <div>
+                        <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
+                               className="dark:invert" width={100} height={24} priority/>
+                    </div>
+                    <div className={`grid grid-cols-2 gap-4`}>
+                        {activeStage === `stage1` && (
+                            <>
+                                <div className={`flex flex-col gap-4 justify-start items-start`}>
+                                    <h1 className={`text-3xl font-semibold text-center `}>Create a Wisetap Account</h1>
+                                    <p className={`text-center`}>Enter your name</p>
+                                </div>
+                                <div className={`flex flex-col justify-start items-start`}>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="first_name"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your first name</label>
+                                        <input type="text" id="first_name" value={firstName}
+                                               onChange={e => setFirstName(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="John" required/>
+                                    </div>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="last_name"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your last name</label>
+                                        <input type="text" id="last_name" value={lastName}
+                                               onChange={e => setLastName(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="Kowalsky" required/>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {activeStage === `stage2` && (
+                            <>
+                                <div className={`flex flex-col gap-4 justify-start items-start`}>
+                                    <h1 className={`text-3xl font-semibold text-center `}>Basic Information</h1>
+                                    <p className={`text-center`}>Enter your email</p>
+                                </div>
+                                <div className={`flex flex-col justify-start items-start`}>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="first_name"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your email address</label>
+                                        <input type="text" id="first_name" value={email}
+                                               onChange={e => setEmail(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="support@wisetap.co.uk" required/>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {activeStage === `stage3` && (
+                            <>
+                                <div className={`flex flex-col gap-4 justify-start items-start`}>
+                                    <h1 className={`text-3xl font-semibold text-center `}>Link to Your Review Page</h1>
+                                    <p className={`text-center`}>e.g. https://g.page/r/CYMJEiP2IJocEBM/review</p>
+                                </div>
+                                <div className={`flex flex-col justify-start items-start`}>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="url"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your URL</label>
+                                        <input type="text" id="url" value={redirectUrl}
+                                               onChange={e => setRedirectUrl(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="https://g.page/r/CYMJEiP2IJocEBM/review" required/>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        <div className={`col-span-2 flex flex-col items-end justify-end`}>
+
+                            <div className={`flex gap-2`}>
+                                <button
+                                    onClick={(e) => nextStage(e, activeStage)}
+                                    className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>{activeStage === 'stage3' ? 'Save' : 'Next'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    className={`min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] py-2 flex gap-2 items-end justify-end mr-4`}>
+                    <Link href={`https://wisetap.co.uk/pages/frequently-asked-questions`}>
+                        <div className={`text-gray-800 hover:text-blue-600`}>
+                            Help
+                        </div>
+                    </Link>
+                    <Link href={`https://wisetap.co.uk/policies/privacy-policy`}>
+                        <div className={`text-gray-800 hover:text-blue-600`}>
+                            Privacy
+                        </div>
+                    </Link>
+                    <Link href={`https://wisetap.co.uk/policies/terms-of-service`}>
+                        <div className={`text-gray-800 hover:text-blue-600`}>
+                            Terms
+                        </div>
+                    </Link>
                 </div>
             </div>
 
-            {/* Form */}
-            <div className="flex items-center justify-center w-full py-24 px-8 md:p-24">
-                <form className="mx-auto md:w-1/2 p-8" onSubmit={handleSubmit}>
-                    {/* Redirect URL Input */}
-                    <div className="mb-5">
-                        <label htmlFor="redirect_url" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">What URL you want to load to customers when they scan your code?</label>
-                        <input type="text" id="redirect_url" value={redirectUrl} onChange={e => setRedirectUrl(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="https://wisetap.co.uk" required />
+
+
+
+
+            {/* MOBILE */}
+            <div className={`md:hidden flex flex-col items-center justify-between h-screen`}>
+                <div className={`w-full bg-white p-8 rounded-xl flex flex-col gap-8`}>
+                    <div>
+                        <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
+                               className="dark:invert" width={100} height={24} priority/>
                     </div>
-                    {/* Register Checkbox */}
-                    <div className="flex items-start mb-5">
-                        <div className="flex items-center h-5">
-                            <input id="registerUser" type="checkbox" checked={registerUser} onChange={(e) => setRegisterUser(e.target.checked)} className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" />
+                    <div className={`flex flex-col gap-4`}>
+                        {activeStage === `stage1` && (
+                            <>
+                                <div className={`flex flex-col gap-4 justify-start items-start`}>
+                                    <h1 className={`text-xl font-semibold`}>Create a Wisetap Account</h1>
+                                </div>
+                                <div className={`flex flex-col justify-start items-start`}>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="first_name"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your first name</label>
+                                        <input type="text" id="first_name" value={firstName}
+                                               onChange={e => setFirstName(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="John" required/>
+                                    </div>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="last_name"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your last name</label>
+                                        <input type="text" id="last_name" value={lastName}
+                                               onChange={e => setLastName(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="Kowalsky" required/>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {activeStage === `stage2` && (
+                            <>
+                                <div className={`flex flex-col gap-2 justify-start items-start`}>
+                                    <h1 className={`text-xl font-semibold text-center `}>Enter Your Email</h1>
+                                    <div>
+                                        We'll only send you confirmation email, and link to edit page
+                                        that allows you to change your redirect URL at anytime.
+                                    </div>
+                                </div>
+                                <div className={`flex flex-col justify-start items-start`}>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="first_name"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your email address</label>
+                                        <input type="text" id="first_name" value={email}
+                                               onChange={e => setEmail(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="support@wisetap.co.uk" required/>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {activeStage === `stage3` && (
+                            <>
+                                <div className={`flex flex-col gap-2 justify-start items-start`}>
+                                    <h1 className={`text-xl font-semibold `}>Link to Your Review Page</h1>
+                                    <div>
+                                        This link will be used to redirect your customers to your review page.
+                                    </div>
+                                </div>
+                                <div className={`flex flex-col justify-start items-start`}>
+                                    <div className="mb-5 w-full">
+                                        <label htmlFor="url"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
+                                            your URL</label>
+                                        <input type="text" id="url" value={redirectUrl}
+                                               onChange={e => setRedirectUrl(e.target.value)}
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               placeholder="https://g.page/r/CYMJEiP2IJocEBM/review" required/>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        <div>
+                            <button
+                                onClick={(e) => nextStage(e, activeStage)}
+                                className={`w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>{activeStage === 'stage3' ? 'Save' : 'Next'}
+                            </button>
                         </div>
-                        <label htmlFor="registerUser" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Register me</label>
                     </div>
-                    {/* Conditional Fields */}
-                    {registerUser && (
-                        <>
-                            <div className="mb-5">
-                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                                <input type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="info@wisetap.co.uk" required />
+                </div>
+
+                <div className={`flex flex-col w-full`}>
+                    <div className={`py-4 flex gap-2 items-center justify-center`}>
+                        <Link href={`https://wisetap.co.uk/pages/frequently-asked-questions`}>
+                            <div className={`text-gray-800 hover:text-blue-600`}>
+                                Help
                             </div>
-                            <div className="mb-5">
-                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-                                <input type="password" id="password" value={password} onChange={e => setPassword(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                        </Link>
+                        <Link href={`https://wisetap.co.uk/policies/privacy-policy`}>
+                            <div className={`text-gray-800 hover:text-blue-600`}>
+                                Privacy
                             </div>
-                            {/*<div className="mb-5">*/}
-                            {/*    <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your phone number</label>*/}
-                            {/*    <input type="text" id="phone" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your phone number" />*/}
-                            {/*</div>*/}
-                        </>
-                    )}
-                    {/* Submit Button */}
-                    <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-                </form>
+                        </Link>
+                        <Link href={`https://wisetap.co.uk/policies/terms-of-service`}>
+                            <div className={`text-gray-800 hover:text-blue-600`}>
+                                Terms
+                            </div>
+                        </Link>
+                    </div>
+                </div>
             </div>
-
-
-        </main>
+        </>
     );
 }

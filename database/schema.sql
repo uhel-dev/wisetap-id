@@ -28,3 +28,31 @@ CREATE TABLE inspection_forms (
     PRIMARY KEY (id),
     FOREIGN KEY (id) REFERENCES qrcodes(id)
 );
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE public.categories (
+                                   categoryId SERIAL PRIMARY KEY,
+                                   displayName VARCHAR(255) NOT NULL
+);
+CREATE TABLE public.subcategories (
+                                      subcategoryId SERIAL PRIMARY KEY,
+                                      categoryId INT NOT NULL,
+                                      displayName VARCHAR(255) NOT NULL,
+                                      FOREIGN KEY (categoryId) REFERENCES public.categories(categoryId)
+);
+CREATE TABLE public.businesses (
+                                   businessId SERIAL PRIMARY KEY,
+                                   subcategoryId INT NOT NULL,
+                                   businessInfo JSONB,
+                                   FOREIGN KEY (subcategoryId) REFERENCES public.subcategories(subcategoryId)
+);

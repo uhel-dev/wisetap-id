@@ -48,16 +48,10 @@ async function fetchDataFromDatabase(quantity) {
 
             const data = rows.map(v => ({
                 card: v.id,
-                qr: `data:image/png;base64,${v.encoded_qr_image}`,
+                qr: `${v.encoded_qr_image}`,
                 url: `${baseQRUrl}/${v.code}`
             }));
 
-
-            // const data =  Array.from({ length: quantity }, (v, i) => ({
-            //     id: i + 1,
-            //     name: `User ${i + 1}`,
-            //     email: `user${i + 1}@example.com`
-            // }));
 
             return data
         }
