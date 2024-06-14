@@ -63,6 +63,12 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
         }
     }
 
+    const getFullName = () => {
+        const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+        const capitalizedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
+        return `${capitalizedFirstName} ${capitalizedLastName}`
+    }
+
     const nextStage = (event: any, activeStage: string) => {
         const stageSplit = activeStage.split('')
         let stageNumber = parseInt(stageSplit[stageSplit.length - 1])
@@ -113,7 +119,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
             <div
                 className={`hidden md:flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-slate-200 to-slate-100`}>
                 <div
-                    className={`bg-white p-8 rounded-xl min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] flex flex-col gap-8`}>
+                    className={`bg-white p-8 rounded-xl min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] flex flex-col gap-8`}>
                     <div>
                         <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
                                className="dark:invert" width={100} height={24} priority/>
@@ -123,7 +129,9 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                             <>
                                 <div className={`flex flex-col gap-4 justify-start items-start`}>
                                     <h1 className={`text-3xl font-semibold text-center `}>Create a Wisetap Account</h1>
-                                    <p className={`text-center`}>Enter your name</p>
+                                    <div className={`w-3/5`}>
+                                        {`Looks like it's your first time using WiseTap 🎉. Please enter your name to continue.`}
+                                    </div>
                                 </div>
                                 <div className={`flex flex-col justify-start items-start`}>
                                     <div className="mb-5 w-full">
@@ -150,10 +158,13 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                         {activeStage === `stage2` && (
                             <>
                                 <div className={`flex flex-col gap-4 justify-start items-start`}>
-                                    <h1 className={`text-3xl font-semibold text-center `}>Basic Information</h1>
-                                    <p className={`text-center`}>Enter your email</p>
+                                    <h1 className={`text-3xl font-semibold text-center `}>Enter Your Email</h1>
+                                    <div className={`w-3/5`}>
+                                        {`We'll only send you confirmation email, and link to edit page
+                                        that allows you to change your redirect URL at anytime.`}
+                                    </div>
                                 </div>
-                                <div className={`flex flex-col justify-start items-start`}>
+                                <div className={`flex flex-col justify-center items-center`}>
                                     <div className="mb-5 w-full">
                                         <label htmlFor="first_name"
                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
@@ -232,6 +243,9 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                             <>
                                 <div className={`flex flex-col gap-4 justify-start items-start`}>
                                     <h1 className={`text-xl font-semibold`}>Create a Wisetap Account</h1>
+                                    <div>
+                                        {`Ops! Looks like it's your first time using WiseTap 🎉. Please enter your name to continue.`}
+                                    </div>
                                 </div>
                                 <div className={`flex flex-col justify-start items-start`}>
                                     <div className="mb-5 w-full">
@@ -240,7 +254,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                                             your first name</label>
                                         <input type="text" id="first_name" value={firstName}
                                                onChange={e => setFirstName(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                placeholder="John" required/>
                                     </div>
                                     <div className="mb-5 w-full">
@@ -249,7 +263,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                                             your last name</label>
                                         <input type="text" id="last_name" value={lastName}
                                                onChange={e => setLastName(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                placeholder="Kowalsky" required/>
                                     </div>
                                 </div>
@@ -271,7 +285,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                                             your email address</label>
                                         <input type="text" id="first_name" value={email}
                                                onChange={e => setEmail(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                placeholder="support@wisetap.co.uk" required/>
                                     </div>
                                 </div>
@@ -292,7 +306,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                                             your URL</label>
                                         <input type="text" id="url" value={redirectUrl}
                                                onChange={e => setRedirectUrl(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                placeholder="https://g.page/r/CYMJEiP2IJocEBM/review" required/>
                                     </div>
                                 </div>

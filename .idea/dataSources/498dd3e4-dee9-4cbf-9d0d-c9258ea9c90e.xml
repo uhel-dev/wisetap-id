@@ -19,9 +19,9 @@
 16389||-9223372036854775808|T|G
 16389||16384|T|G
 16389||16387|T|G</Grants>
-      <IntrospectionStateNumber>133126</IntrospectionStateNumber>
+      <IntrospectionStateNumber>134148</IntrospectionStateNumber>
       <ServerVersion>16.3</ServerVersion>
-      <StartupTime>1718393496</StartupTime>
+      <StartupTime>1718403732</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -832,7 +832,7 @@ false Zulu
 13187||10|C|G
 13187||-9223372036854775808|U|G
 13187||10|U|G</Grants>
-      <IntrospectionStateNumber>133126</IntrospectionStateNumber>
+      <IntrospectionStateNumber>134148</IntrospectionStateNumber>
       <ObjectId>16389</ObjectId>
       <OwnerName>default</OwnerName>
     </database>
@@ -5951,8 +5951,8 @@ false Zulu
     <schema id="266" parent="3" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>133126</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2024-06-14.19:51:24</LastIntrospectionLocalTimestamp>
+      <IntrospectionStateNumber>134148</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2024-06-14.22:44:28</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>523</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
@@ -6011,7 +6011,7 @@ false Zulu
     </table>
     <table id="274" parent="266" name="qrcodes">
       <ObjectId>204928</ObjectId>
-      <StateNumber>133125</StateNumber>
+      <StateNumber>134147</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>default</OwnerName>
     </table>
@@ -6167,7 +6167,13 @@ false Zulu
       <StateNumber>133125</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <index id="296" parent="274" name="qrcodes_pkey">
+    <column id="296" parent="274" name="full_name">
+      <DasType>text|0s</DasType>
+      <Position>9</Position>
+      <StateNumber>134147</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <index id="297" parent="274" name="qrcodes_pkey">
       <ColNames>code</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>204936</ObjectId>
@@ -6179,14 +6185,14 @@ false Zulu
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="297" parent="274" name="qrcodes_pkey">
+    <key id="298" parent="274" name="qrcodes_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>204937</ObjectId>
       <Primary>1</Primary>
       <StateNumber>51336</StateNumber>
       <UnderlyingIndexId>204936</UnderlyingIndexId>
     </key>
-    <column id="298" parent="275" name="subcategoryid">
+    <column id="299" parent="275" name="subcategoryid">
       <DasType>integer|0s</DasType>
       <DefaultExpression>nextval(&apos;subcategories_subcategoryid_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
@@ -6195,21 +6201,21 @@ false Zulu
       <SequenceId>245767</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="299" parent="275" name="categoryid">
+    <column id="300" parent="275" name="categoryid">
       <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>76803</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="300" parent="275" name="displayname">
+    <column id="301" parent="275" name="displayname">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>76803</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <foreign-key id="301" parent="275" name="subcategories_categoryid_fkey">
+    <foreign-key id="302" parent="275" name="subcategories_categoryid_fkey">
       <ColNames>categoryid</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>245774</ObjectId>
@@ -6217,7 +6223,7 @@ false Zulu
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>245761</RefTableId>
     </foreign-key>
-    <index id="302" parent="275" name="subcategories_pkey">
+    <index id="303" parent="275" name="subcategories_pkey">
       <ColNames>subcategoryid</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>245772</ObjectId>
@@ -6226,14 +6232,14 @@ false Zulu
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="303" parent="275" name="subcategories_pkey">
+    <key id="304" parent="275" name="subcategories_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>245773</ObjectId>
       <Primary>1</Primary>
       <StateNumber>76803</StateNumber>
       <UnderlyingIndexId>245772</UnderlyingIndexId>
     </key>
-    <column id="304" parent="276" name="id">
+    <column id="305" parent="276" name="id">
       <DasType>integer|0s</DasType>
       <DefaultExpression>nextval(&apos;users_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
@@ -6242,26 +6248,26 @@ false Zulu
       <SequenceId>16453</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="305" parent="276" name="email">
+    <column id="306" parent="276" name="email">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>744</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="306" parent="276" name="name">
+    <column id="307" parent="276" name="name">
       <DasType>varchar(255)|0s</DasType>
       <Position>3</Position>
       <StateNumber>744</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="307" parent="276" name="username">
+    <column id="308" parent="276" name="username">
       <DasType>varchar(255)|0s</DasType>
       <Position>4</Position>
       <StateNumber>744</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="308" parent="276" name="users_pkey">
+    <index id="309" parent="276" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16460</ObjectId>
@@ -6270,19 +6276,19 @@ false Zulu
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="309" parent="276" name="users_pkey">
+    <key id="310" parent="276" name="users_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16461</ObjectId>
       <Primary>1</Primary>
       <StateNumber>744</StateNumber>
       <UnderlyingIndexId>16460</UnderlyingIndexId>
     </key>
-    <column id="310" parent="277" name="category_display_name">
+    <column id="311" parent="277" name="category_display_name">
       <DasType>varchar(255)|0s</DasType>
       <Position>1</Position>
       <StateNumber>78853</StateNumber>
     </column>
-    <column id="311" parent="277" name="subcategory_display_name">
+    <column id="312" parent="277" name="subcategory_display_name">
       <DasType>varchar(255)|0s</DasType>
       <Position>2</Position>
       <StateNumber>78853</StateNumber>
