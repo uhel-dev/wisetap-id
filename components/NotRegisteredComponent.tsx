@@ -260,8 +260,8 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                                 <div className={`flex flex-col gap-2 justify-start items-start`}>
                                     <h1 className={`text-xl font-semibold text-center `}>Enter Your Email</h1>
                                     <div>
-                                        We'll only send you confirmation email, and link to edit page
-                                        that allows you to change your redirect URL at anytime.
+                                        {`We'll only send you confirmation email, and link to edit page
+                                        that allows you to change your redirect URL at anytime.`}
                                     </div>
                                 </div>
                                 <div className={`flex flex-col justify-start items-start`}>
