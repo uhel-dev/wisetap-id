@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function EditRedirectUrlComponent({id, callHandleRedirectRegister, assignedUrl}: any) {
+export default function EditRedirectUrlComponent({id, callDisableEditMode, assignedUrl}: any) {
     const [redirectUrl, setRedirectUrl] = useState('');
 
     const handleSubmit = async (event: any) => {
@@ -30,7 +30,7 @@ export default function EditRedirectUrlComponent({id, callHandleRedirectRegister
         });
         await response.text();
         if (response.status === 200) {
-            callHandleRedirectRegister()
+            callDisableEditMode(redirectUrl)
         }
     };
 
@@ -100,7 +100,7 @@ export default function EditRedirectUrlComponent({id, callHandleRedirectRegister
             {/* MOBILE */}
 
             <div className={`md:hidden flex flex-col items-center justify-between h-screen`}>
-                <div className={`bg-white p-8 rounded-xl flex flex-col gap-8`}>
+                <div className={`w-full bg-white p-8 rounded-xl flex flex-col gap-8`}>
                     <div>
                         <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
                                className="dark:invert" width={100} height={24} priority/>

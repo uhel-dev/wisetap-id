@@ -15,6 +15,11 @@ const RedirectPage = () => {
         setRegistered(true)
     }
 
+    const disableEditMode = (url: string) => {
+        setEditMode(false)
+        window.location.href = url
+    }
+
     useEffect(() => {
         const fetchRedirectUrl = async () => {
             const res = await fetch(`/api/get-redirect-url?code=${router.query.id}`);
@@ -47,7 +52,7 @@ const RedirectPage = () => {
     if(editMode) {
         return <EditRedirectUrlComponent
             id={router.query.id}
-            callHandleRedirectRegister={handleRedirectRegister}
+            callDisableEditMode={(url: string) => disableEditMode(url)}
             assignedUrl={redirectUrl}
         />
     }
