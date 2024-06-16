@@ -152,69 +152,6 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
         setActiveStage(`stage${stageNumber}`)
     }
 
-    const inputFieldCSS=  `
-        .text-base {
-          line-height: 1;
-          margin: 0;
-          height: 20px;
-          padding: 5px 8px;
-          border: 1px solid #1f1f1f;
-          border-radius: 4px;
-          transition: all .3s;
-          height: 48px;
-          width: 100%;
-        }
-        
-        .text-base:focus {
-          border: 2px solid #0074d9;
-          outline: 0;
-        }
-        
-        .text-field {
-          position: relative;
-        }
-        
-        .text-field input,
-        .text-field textarea {
-          display: inline-block;
-          padding: 10px;
-        }
-        
-        .text-field span {
-          color: #1f1f1f;
-          position: absolute;
-          pointer-events: none;
-          left: 10px;
-          top: 23px;
-          transition: 0.3s;
-        }
-        
-        .text-field input:focus+span,
-        .text-field input:not(:placeholder-shown)+span,
-        .text-field textarea:focus+span,
-        .text-field textarea:not(:placeholder-shown)+span {
-          top: 2px;
-          left: 10px;
-          font-size: small;
-          background-color: #fff;
-          padding: 0 5px 0 5px;
-        }
-        
-        .text-field input:focus:invalid+span,
-        .text-field input:not(:placeholder-shown):invalid+span,
-        .text-field textarea:focus:invalid+span,
-        .text-field textarea:not(:placeholder-shown):invalid+span {
-          color: #0074d9;
-        }
-        
-        .w100p {
-          padding: 10px 0;
-        }
-        
-        .w100p textarea {
-          height: 120px;
-        }
-`
 
     return (
         <>
@@ -526,3 +463,68 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
         </>
     );
 }
+
+
+export const inputFieldCSS=  `
+        .text-base {
+          line-height: 1;
+          margin: 0;
+          height: 20px;
+          padding: 5px 8px;
+          border: 1px solid #1f1f1f;
+          border-radius: 4px;
+          transition: all .3s;
+          height: 48px;
+          width: 100%;
+        }
+        
+        .text-base:focus {
+          border: 2px solid #0074d9;
+          outline: 0;
+        }
+        
+        .text-field {
+          position: relative;
+        }
+        
+        .text-field input,
+        .text-field textarea {
+          display: inline-block;
+          padding: 10px;
+        }
+        
+        .text-field span {
+          color: #1f1f1f;
+          position: absolute;
+          pointer-events: none;
+          left: 10px;
+          top: 23px;
+          transition: 0.3s;
+        }
+        
+        .text-field input:focus+span,
+        .text-field input:not(:placeholder-shown)+span,
+        .text-field textarea:focus+span,
+        .text-field textarea:not(:placeholder-shown)+span {
+          top: 2px;
+          left: 10px;
+          font-size: small;
+          background-color: #fff;
+          padding: 0 5px 0 5px;
+        }
+        
+        .text-field input:focus:invalid+span,
+        .text-field input:not(:placeholder-shown):invalid+span,
+        .text-field textarea:focus:invalid+span,
+        .text-field textarea:not(:placeholder-shown):invalid+span {
+          color: #0074d9;
+        }
+        
+        .w100p {
+          padding: 10px 0;
+        }
+        
+        .w100p textarea {
+          height: 120px;
+        }
+`
