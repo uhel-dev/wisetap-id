@@ -63,9 +63,75 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
         }
     };
 
+    const inputFieldCSS=  `
+        .text-base {
+          line-height: 1;
+          margin: 0;
+          height: 20px;
+          padding: 5px 8px;
+          border: 1px solid #1f1f1f;
+          border-radius: 4px;
+          transition: all .3s;
+          height: 48px;
+          width: 100%;
+        }
+        
+        .text-base:focus {
+          border: 2px solid #0074d9;
+          outline: 0;
+        }
+        
+        .text-field {
+          position: relative;
+        }
+        
+        .text-field input,
+        .text-field textarea {
+          display: inline-block;
+          padding: 10px;
+        }
+        
+        .text-field span {
+          color: #1f1f1f;
+          position: absolute;
+          pointer-events: none;
+          left: 10px;
+          top: 23px;
+          transition: 0.3s;
+        }
+        
+        .text-field input:focus+span,
+        .text-field input:not(:placeholder-shown)+span,
+        .text-field textarea:focus+span,
+        .text-field textarea:not(:placeholder-shown)+span {
+          top: 2px;
+          left: 10px;
+          font-size: small;
+          background-color: #fff;
+          padding: 0 5px 0 5px;
+        }
+        
+        .text-field input:focus:invalid+span,
+        .text-field input:not(:placeholder-shown):invalid+span,
+        .text-field textarea:focus:invalid+span,
+        .text-field textarea:not(:placeholder-shown):invalid+span {
+          color: #0074d9;
+        }
+        
+        .w100p {
+          padding: 10px 0;
+        }
+        
+        .w100p textarea {
+          height: 120px;
+        }
+`
+
 
     return (
         <>
+            <style>{inputFieldCSS}</style>
+
             {/* TABLET / DESKTOP*/}
             <div
                 className={`hidden md:flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-slate-200 to-slate-100`}>
@@ -81,20 +147,28 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
                             <p className={`text-center`}>Your current link: <span className={`text-blue-600`}><Link
                                 href={assignedUrl}>{assignedUrl}</Link></span></p>
                         </div>
-                        <div className={`flex flex-col justify-start items-start`}>
-                            <div className="mb-5 w-full">
-                                <label htmlFor="url"
-                                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                    your new URL</label>
-                                <input type="text" id="url" value={`${redirectUrl}`}
-                                       onChange={e => setRedirectUrl(e.target.value)}
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                       placeholder="e.g. https://g.page/r/CYMJEiP2IJocEBM/review" required/>
+                        <div className={`flex flex-col justify-center items-start`}>
+                            <div className="w-full">
+                                <div className="text-field w100p w-full">
+                                    <input
+                                        className="text-base w100p w-full"
+                                        type="text"
+                                        required
+                                        placeholder=" "
+                                        value={redirectUrl}
+                                        onChange={e => setRedirectUrl(e.target.value)}
+                                    />
+                                    <span>Email address</span>
+                                </div>
                             </div>
                         </div>
                         <div className={`col-span-2 flex flex-col items-end justify-end`}>
 
                             <div className={`flex gap-2`}>
+                                {/*<button*/}
+                                {/*    onClick={(e) => handleSubmit(e)}*/}
+                                {/*    className={`bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl`}>Reset*/}
+                                {/*</button>*/}
                                 <button
                                     onClick={(e) => handleSubmit(e)}
                                     className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>Update
@@ -125,7 +199,6 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
             </div>
 
 
-
             {/* MOBILE */}
 
             <div className={`md:hidden flex flex-col items-center justify-between h-screen`}>
@@ -145,14 +218,18 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
                             </div>
                         </div>
                         <div className={`flex flex-col justify-start items-start`}>
-                            <div className="mb-5 w-full">
-                            <label htmlFor="url"
-                                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                    your new link</label>
-                                <input type="text" id="url" value={`https://` + redirectUrl}
-                                       onChange={e => setRedirectUrl(e.target.value)}
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                       placeholder="e.g. https://g.page/r/CYMJEiP2IJocEBM/review" required/>
+                            <div className="w-full">
+                                <div className="text-field w100p w-full">
+                                    <input
+                                        className="text-base w100p w-full"
+                                        type="text"
+                                        required
+                                        placeholder=" "
+                                        value={redirectUrl}
+                                        onChange={e => setRedirectUrl(e.target.value)}
+                                    />
+                                    <span>Email address</span>
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -184,5 +261,5 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
             </div>
         </>
     )
-;
+        ;
 }
