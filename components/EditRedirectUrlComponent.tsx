@@ -5,8 +5,37 @@ import Link from "next/link";
 
 export default function EditRedirectUrlComponent({id, callDisableEditMode, assignedUrl}: any) {
     const [redirectUrl, setRedirectUrl] = useState('');
+    const validateURL = (url: any) => {
+        let givenURL;
+        try {
+            // Check if the URL has a scheme or 'www'
+            if (!/^https?:\/\//i.test(url) && !/^www\./i.test(url)) {
+                url = 'https://' + url;
+            }
+            // Ensure the URL contains at least one dot (".") after the scheme
+            if (!/\./.test(url.split('/')[2])) {
+                throw new Error("Invalid URL");
+            }
+            givenURL = new URL(url);
+            setRedirectUrl(givenURL.href);
+        } catch (error) {
+            console.log("error is", error);
+            return false;
+        }
+        return true;
+    }
 
     const handleSubmit = async (event: any) => {
+        if(!validateURL(redirectUrl)) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Please enter a valid URL',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
+
         event.preventDefault();
         if(redirectUrl === '') {
             Swal.fire({
@@ -57,7 +86,7 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
                                 <label htmlFor="url"
                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
                                     your new URL</label>
-                                <input type="text" id="url" value={redirectUrl}
+                                <input type="text" id="url" value={`${redirectUrl}`}
                                        onChange={e => setRedirectUrl(e.target.value)}
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                        placeholder="e.g. https://g.page/r/CYMJEiP2IJocEBM/review" required/>
@@ -120,7 +149,7 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
                             <label htmlFor="url"
                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
                                     your new link</label>
-                                <input type="text" id="url" value={redirectUrl}
+                                <input type="text" id="url" value={`https://` + redirectUrl}
                                        onChange={e => setRedirectUrl(e.target.value)}
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                        placeholder="e.g. https://g.page/r/CYMJEiP2IJocEBM/review" required/>

@@ -3,6 +3,9 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import Swal from 'sweetalert2'
 import Link from "next/link";
+import {validateEmail} from "@/utils/validateEmail";
+import {red} from "next/dist/lib/picocolors";
+import {validateUrl} from "@/utils/validateUrl";
 
 export default function NotRegisteredComponent({id, callHandleRedirectRegister}: any) {
     const [registerUser, setRegisterUser] = useState(false);
@@ -11,15 +14,46 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [validRedirectUrl, setValidRedirectUrl] = useState(false);
     // const [phoneNumber, setPhoneNumber] = useState(''); // New state for phone number
+    const [emailError, setEmailError] = useState(false);
+    const [emailSuccess, setEmailSuccess] = useState(false);
 
     const [activeStage, setActiveStage] = useState('stage1');
-    const getRequestBody = () => {
-        const body = { id, redirectUrl, email, password }
+    const getRequestBody = (link:string) => {
+        const body = { id, redirectUrl: link, email, password, fullName: getFullName() }
         return JSON.stringify(body)
     }
 
+
+
+
+
+
+    const handleEmailChange = (e: any) => {
+        setEmail(e.target.value);
+        setEmailError(false);
+
+        if(e.target.value === '') {
+            setEmailSuccess(false);
+            return;
+        }
+
+        setEmailSuccess(validateEmail(e.target.value))
+    }
+
     const handleSubmit = async (event: any) => {
+        const link = validateUrl(redirectUrl)
+
+        if(link === 'Invalid URL') {
+            Swal.fire({
+                title: 'Error',
+                text: 'Please enter a valid link',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
         event.preventDefault();
         // if (!registerUser) {
         //     alert('Please check the register box if you want to register.');
@@ -31,7 +65,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: getRequestBody(),
+            body: getRequestBody(link),
         });
         const result = await response.text();
         if (response.status === 200) {
@@ -72,17 +106,17 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
     const nextStage = (event: any, activeStage: string) => {
         const stageSplit = activeStage.split('')
         let stageNumber = parseInt(stageSplit[stageSplit.length - 1])
-        if(firstName === '' || lastName === '' ) {
+        if(firstName === '') {
             setActiveStage('stage1')
             Swal.fire({
                 title: 'Error',
-                text: 'Please enter your first and last name',
+                text: 'Please enter your first name',
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
             return;
         }
-        if(email === '' && activeStage !== 'stage1') {
+        if(email === '' && !emailError && activeStage !== 'stage1') {
             setActiveStage('stage2')
             Swal.fire({
                 title: 'Error',
@@ -92,17 +126,23 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
             })
             return;
         }
+
+        if(activeStage === 'stage2' && !validateEmail(email)) {
+            setEmailError(true)
+            return
+        }
+
         if(redirectUrl === '' && activeStage !== 'stage2' && activeStage !== 'stage1') {
             setActiveStage('stage3')
             Swal.fire({
                 title: 'Error',
-                text: 'Please enter your redirect URL',
+                text: 'Please enter your review page link',
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
             return;
         }
-        if(stageNumber === 3 && firstName !== '' && lastName !== '' && email !== '') {
+        if(stageNumber === 3 && firstName !== ''  && email !== '') {
             const response = handleSubmit(event)
             return;
         }
@@ -112,14 +152,78 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
         setActiveStage(`stage${stageNumber}`)
     }
 
+    const inputFieldCSS=  `
+        .text-base {
+          line-height: 1;
+          margin: 0;
+          height: 20px;
+          padding: 5px 8px;
+          border: 1px solid #1f1f1f;
+          border-radius: 4px;
+          transition: all .3s;
+          height: 48px;
+          width: 100%;
+        }
+        
+        .text-base:focus {
+          border: 2px solid #0074d9;
+          outline: 0;
+        }
+        
+        .text-field {
+          position: relative;
+        }
+        
+        .text-field input,
+        .text-field textarea {
+          display: inline-block;
+          padding: 10px;
+        }
+        
+        .text-field span {
+          color: #1f1f1f;
+          position: absolute;
+          pointer-events: none;
+          left: 10px;
+          top: 23px;
+          transition: 0.3s;
+        }
+        
+        .text-field input:focus+span,
+        .text-field input:not(:placeholder-shown)+span,
+        .text-field textarea:focus+span,
+        .text-field textarea:not(:placeholder-shown)+span {
+          top: 2px;
+          left: 10px;
+          font-size: small;
+          background-color: #fff;
+          padding: 0 5px 0 5px;
+        }
+        
+        .text-field input:focus:invalid+span,
+        .text-field input:not(:placeholder-shown):invalid+span,
+        .text-field textarea:focus:invalid+span,
+        .text-field textarea:not(:placeholder-shown):invalid+span {
+          color: #0074d9;
+        }
+        
+        .w100p {
+          padding: 10px 0;
+        }
+        
+        .w100p textarea {
+          height: 120px;
+        }
+`
 
     return (
         <>
+            <style>{inputFieldCSS}</style>
             {/* TABLET / DESKTOP*/}
             <div
-                className={`hidden md:flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-slate-200 to-slate-100`}>
+                className={`hidden md:flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-slate-200 to-slate-100 p-24`}>
                 <div
-                    className={`bg-white p-8 rounded-xl min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] flex flex-col gap-8`}>
+                    className={`bg-white p-8 rounded-xl w-full min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] flex flex-col gap-8`}>
                     <div>
                         <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
                                className="dark:invert" width={100} height={24} priority/>
@@ -127,30 +231,38 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                     <div className={`grid grid-cols-2 gap-4`}>
                         {activeStage === `stage1` && (
                             <>
-                                <div className={`flex flex-col gap-4 justify-start items-start`}>
+                                <div className={`flex flex-col gap-4 justify-center items-start`}>
                                     <h1 className={`text-3xl font-semibold text-center `}>Create a Wisetap Account</h1>
-                                    <div className={`w-3/5`}>
+                                    <div className={`w-full md:w-3/5`}>
                                         {`Looks like it's your first time using WiseTap 🎉. Please enter your name to continue.`}
                                     </div>
                                 </div>
                                 <div className={`flex flex-col justify-start items-start`}>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="first_name"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your first name</label>
-                                        <input type="text" id="first_name" value={firstName}
-                                               onChange={e => setFirstName(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="John" required/>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={firstName}
+                                                onChange={e => setFirstName(e.target.value)}
+                                            />
+                                            <span>First name</span>
+                                        </div>
                                     </div>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="last_name"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your last name</label>
-                                        <input type="text" id="last_name" value={lastName}
-                                               onChange={e => setLastName(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="Kowalsky" required/>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={lastName}
+                                                onChange={e => setLastName(e.target.value)}
+                                            />
+                                            <span>Last name (optional)</span>
+                                        </div>
                                     </div>
                                 </div>
                             </>
@@ -159,20 +271,42 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                             <>
                                 <div className={`flex flex-col gap-4 justify-start items-start`}>
                                     <h1 className={`text-3xl font-semibold text-center `}>Enter Your Email</h1>
-                                    <div className={`w-3/5`}>
-                                        {`We'll only send you confirmation email, and link to edit page
-                                        that allows you to change your redirect URL at anytime.`}
+                                    <div className={`w-full lg:w-4/6`}>
+                                        {`We'll send you confirmation email, with link to edit page
+                                        that allows you to update your link at anytime.`}
                                     </div>
                                 </div>
                                 <div className={`flex flex-col justify-center items-center`}>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="first_name"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your email address</label>
-                                        <input type="text" id="first_name" value={email}
-                                               onChange={e => setEmail(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="support@wisetap.co.uk" required/>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={email}
+                                                onChange={e => handleEmailChange(e)}
+                                            />
+                                            <span>Email address</span>
+                                        </div>
+                                        { emailError && (
+                                            <div>
+                                                <div
+                                                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                                                    role="alert">
+                                                    <span className="font-medium">{`Something doesn't look right!`}</span> Please provide your valid email.
+                                                </div>
+                                            </div>
+                                        )}
+                                        {emailSuccess && (
+                                            <div>
+                                                <div
+                                                    className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                                                    role="alert">
+                                                    <span className="font-medium">Looks good!</span> Thank you for providing your email, hit next to proceed.
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </>
@@ -181,34 +315,44 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                             <>
                                 <div className={`flex flex-col gap-4 justify-start items-start`}>
                                     <h1 className={`text-3xl font-semibold text-center `}>Link to Your Review Page</h1>
-                                    <p className={`text-center`}>e.g. https://g.page/r/CYMJEiP2IJocEBM/review</p>
+                                    <div className={`w-full lg:w-4/6`}>
+                                        {`Please enter the link to your review page. This link will be used to redirect your customers to your review page when they`} <strong>scan</strong> or <strong>tap</strong> {`WiseTap.`}
+                                    </div>
+                                    {/*<p className={`text-center`}>e.g. https://g.page/r/CYMJEiP2IJocEBM/review</p>*/}
                                 </div>
-                                <div className={`flex flex-col justify-start items-start`}>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="url"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your URL</label>
-                                        <input type="text" id="url" value={redirectUrl}
-                                               onChange={e => setRedirectUrl(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="https://g.page/r/CYMJEiP2IJocEBM/review" required/>
+                                <div className={`flex flex-col justify-center items-start`}>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={redirectUrl}
+                                                onChange={e => setRedirectUrl(e.target.value)}
+                                            />
+                                            <span>Review link</span>
+                                        </div>
+                                        <div className={`w-full flex justify-start pt-1`}>
+                                            <p className={`justify-start text-center`}>e.g.
+                                                https://g.page/r/CYMJEiP2IJocEBM/review</p>
+                                        </div>
                                     </div>
                                 </div>
                             </>
                         )}
                         <div className={`col-span-2 flex flex-col items-end justify-end`}>
-
                             <div className={`flex gap-2`}>
                                 <button
                                     onClick={(e) => nextStage(e, activeStage)}
-                                    className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>{activeStage === 'stage3' ? 'Save' : 'Next'}
+                                    className={`bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl`}>{activeStage === 'stage3' ? 'Save' : 'Next'}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div
-                    className={`min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] py-2 flex gap-2 items-end justify-end mr-4`}>
+                    className={`w-full min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] py-2 flex gap-2 items-end justify-end mr-4`}>
                     <Link href={`https://wisetap.co.uk/pages/frequently-asked-questions`}>
                         <div className={`text-gray-800 hover:text-blue-600`}>
                             Help
@@ -243,28 +387,36 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                             <>
                                 <div className={`flex flex-col gap-4 justify-start items-start`}>
                                     <h1 className={`text-xl font-semibold`}>Create a Wisetap Account</h1>
-                                    <div>
-                                        {`Ops! Looks like it's your first time using WiseTap 🎉. Please enter your name to continue.`}
+                                    <div className={`w-[85%]`}>
+                                        {`Looks like it's your first time using WiseTap 🎉. Please enter your name to continue.`}
                                     </div>
                                 </div>
                                 <div className={`flex flex-col justify-start items-start`}>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="first_name"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your first name</label>
-                                        <input type="text" id="first_name" value={firstName}
-                                               onChange={e => setFirstName(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="John" required/>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={firstName}
+                                                onChange={e => setFirstName(e.target.value)}
+                                            />
+                                            <span>First name</span>
+                                        </div>
                                     </div>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="last_name"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your last name</label>
-                                        <input type="text" id="last_name" value={lastName}
-                                               onChange={e => setLastName(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="Kowalsky" required/>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={lastName}
+                                                onChange={e => setLastName(e.target.value)}
+                                            />
+                                            <span>Last name (optional)</span>
+                                        </div>
                                     </div>
                                 </div>
                             </>
@@ -274,19 +426,41 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                                 <div className={`flex flex-col gap-2 justify-start items-start`}>
                                     <h1 className={`text-xl font-semibold text-center `}>Enter Your Email</h1>
                                     <div>
-                                        {`We'll only send you confirmation email, and link to edit page
-                                        that allows you to change your redirect URL at anytime.`}
+                                        {`We'll send you confirmation email, with link to edit page
+                                        that allows you to update your link at anytime.`}
                                     </div>
                                 </div>
                                 <div className={`flex flex-col justify-start items-start`}>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="first_name"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your email address</label>
-                                        <input type="text" id="first_name" value={email}
-                                               onChange={e => setEmail(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="support@wisetap.co.uk" required/>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={email}
+                                                onChange={e => handleEmailChange(e)}
+                                            />
+                                            <span>Email address</span>
+                                        </div>
+                                        {emailError && (
+                                            <div>
+                                                <div
+                                                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                                                    role="alert">
+                                                    <span className="font-medium">{`Something doesn't look right!`}</span> Please provide your valid email.
+                                                </div>
+                                            </div>
+                                        )}
+                                        {emailSuccess && (
+                                            <div>
+                                                <div
+                                                    className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                                                    role="alert">
+                                                    <span className="font-medium">Looks good!</span> Thank you for providing your email, hit next to proceed.
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </>
@@ -296,18 +470,26 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                                 <div className={`flex flex-col gap-2 justify-start items-start`}>
                                     <h1 className={`text-xl font-semibold `}>Link to Your Review Page</h1>
                                     <div>
-                                        This link will be used to redirect your customers to your review page.
+                                        {`Please enter the link to your review page. This link will be used to redirect your customers to your review page when they `}
+                                        <strong>scan</strong> or <strong>tap</strong> {`WiseTap.`}
                                     </div>
                                 </div>
                                 <div className={`flex flex-col justify-start items-start`}>
-                                    <div className="mb-5 w-full">
-                                        <label htmlFor="url"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter
-                                            your URL</label>
-                                        <input type="text" id="url" value={redirectUrl}
-                                               onChange={e => setRedirectUrl(e.target.value)}
-                                               className="bg-gray-50 border border-gray-300 text-gray-900 text-[16px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder="https://g.page/r/CYMJEiP2IJocEBM/review" required/>
+                                    <div className="w-full">
+                                        <div className="text-field w100p w-full">
+                                            <input
+                                                className="text-base w100p w-full"
+                                                type="text"
+                                                required
+                                                placeholder=" "
+                                                value={redirectUrl}
+                                                onChange={e => setRedirectUrl(e.target.value)}
+                                            />
+                                            <span>Review link</span>
+                                        </div>
+                                        <div className={`w-full flex justify-start pt-1`}>
+                                            <p className={`justify-start text-sm`}>e.g. https://g.page/r/CYMJEiP2IJocEBM/review</p>
+                                        </div>
                                     </div>
                                 </div>
                             </>
@@ -315,7 +497,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                         <div>
                             <button
                                 onClick={(e) => nextStage(e, activeStage)}
-                                className={`w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>{activeStage === 'stage3' ? 'Save' : 'Next'}
+                                className={`w-full bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl`}>{activeStage === 'stage3' ? 'Save' : 'Next'}
                             </button>
                         </div>
                     </div>
