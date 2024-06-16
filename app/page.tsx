@@ -6,16 +6,25 @@ import {inputFieldCSS} from "@/components/NotRegisteredComponent";
 
 export default function Home() {
   const [code, setCode] = useState('');
+  const [codeError, setCodeError] = useState(false);
 
   const h = async () => {
+
+  }
+
+  const handleSubmit = async () => {
       const res = await fetch(`/api/get-redirect-url?code=${code}`)
       if (res.status === 200) {
           window.location.href = `/qr/${code}?edit=true`
       }
+      else {
+          setCodeError(true)
+      }
   }
 
-  const handleSubmit = (e: any) => {
-
+  const handleCodeChange = (val: string) => {
+    setCodeError(false);
+    setCode(val);
   }
 
   return (
@@ -47,11 +56,20 @@ export default function Home() {
                                       required
                                       placeholder=" "
                                       value={code}
-                                      onChange={e => setCode(e.target.value)}
+                                      onChange={e => handleCodeChange(e.target.value)}
                                   />
                                   <span>WiseTap code</span>
                               </div>
                           </div>
+                          {codeError && (
+                              <div>
+                                  <div
+                                      className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                                      role="alert">
+                                      <span className="font-medium">{`Something doesn't look right!`}</span> {`We were unable to find the code you entered. Please use the code from the email we've sent.`}
+                                  </div>
+                              </div>
+                          )}
                       </div>
                       <div className={`col-span-2 flex flex-col items-end justify-end`}>
 
@@ -61,7 +79,7 @@ export default function Home() {
                               {/*    className={`bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl`}>Reset*/}
                               {/*</button>*/}
                               <button
-                                  onClick={(e) => handleSubmit(e)}
+                                  onClick={handleSubmit}
                                   className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>Search
                               </button>
                           </div>
@@ -111,15 +129,24 @@ export default function Home() {
                                       required
                                       placeholder=" "
                                       value={code}
-                                      onChange={e => setCode(e.target.value)}
+                                      onChange={e => handleCodeChange(e.target.value)}
                                   />
                                   <span>WiseTap code</span>
                               </div>
                           </div>
+                          {codeError && (
+                              <div>
+                                  <div
+                                      className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                                      role="alert">
+                                      <span className="font-medium">{`Something doesn't look right!`}</span> {`We were unable to find the code you entered. Please use the code from the email we've sent.`}
+                                  </div>
+                              </div>
+                          )}
                       </div>
                       <div>
                           <button
-                              onClick={(e) => handleSubmit(e)}
+                              onClick={handleSubmit}
                               className={`w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>Search
                           </button>
                       </div>
