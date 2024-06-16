@@ -1,4 +1,4 @@
-import '../app/globals.css'
+import '../../app/globals.css'
 import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -286,7 +286,7 @@ export default function ListQRCodes() {
                     </Link>
 
                     <Link
-                        href="/create-qr-code"
+                        href="/admin/create-qr-code"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
                     >
@@ -320,7 +320,7 @@ export default function ListQRCodes() {
                     </Link>
 
                     <Link
-                        href="/"
+                        href="/public"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
                     >

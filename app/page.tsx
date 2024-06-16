@@ -14,64 +14,135 @@ export default function Home() {
       }
   }
 
+  const handleSubmit = (e: any) => {
+
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <style jsx>
-        {inputFieldCSS}
-      </style>
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by entering&nbsp;
-          <code className="font-mono font-bold">code</code>
-          &nbsp;from the email.
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/wise-tap-rectangle-logo-black-no-padding.svg"
-              alt="WiseTap Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+      <>
+          <style>{inputFieldCSS}</style>
 
-        <div className={`flex flex-col justify-center items-center gap-4`}>
-            <Image
-                className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-                src="/wise-tap-rectangle-logo-black-no-padding.svg"
-                alt="WiseTap Logo"
-                width={240}
-                height={60}
-                priority
-            />
-            <div className="flex items-center gap-2 min-w-[480px]">
-                <div className="text-field w100p w-full">
-                    <input
-                        className="text-base w100p w-full"
-                        type="text"
-                        required
-                        placeholder=" "
-                        value={code}
-                        onChange={e => setCode(e.target.value)}
-                    />
-                    <span>WiseTap code</span>
-                </div>
-                <button onClick={h} className={`px-4 py-2 text-white rounded-[4px] bg-blue-600 hover:bg-blue-700 h-[48px] flex items-center`}>
-                    Search
-                </button>
-            </div>
-        </div>
+          {/* TABLET / DESKTOP*/}
+          <div
+              className={`hidden md:flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-slate-200 to-slate-100`}>
+              <div
+                  className={`bg-white p-8 rounded-xl min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px]  flex flex-col gap-8`}>
+                  <div>
+                      <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
+                             className="dark:invert" width={100} height={24} priority/>
+                  </div>
+                  <div className={`grid grid-cols-2 gap-4`}>
+                      <div className={`flex flex-col gap-4 justify-start items-start`}>
+                          <h1 className={`text-3xl font-semibold `}>Search by code</h1>
+                          <div className={`w-full lg:w-4/6`}>
+                              {`Search your WiseTap by code from the email we've sent you. You can update link to your review page at anytime.`}
+                          </div>
+                      </div>
+                      <div className={`flex flex-col justify-center items-start`}>
+                          <div className="w-full">
+                              <div className="text-field w100p w-full">
+                                  <input
+                                      className="text-base w100p w-full"
+                                      type="text"
+                                      required
+                                      placeholder=" "
+                                      value={code}
+                                      onChange={e => setCode(e.target.value)}
+                                  />
+                                  <span>WiseTap code</span>
+                              </div>
+                          </div>
+                      </div>
+                      <div className={`col-span-2 flex flex-col items-end justify-end`}>
 
-        <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        </div>
-    </main>
+                          <div className={`flex gap-2`}>
+                              {/*<button*/}
+                              {/*    onClick={(e) => handleSubmit(e)}*/}
+                              {/*    className={`bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl`}>Reset*/}
+                              {/*</button>*/}
+                              <button
+                                  onClick={(e) => handleSubmit(e)}
+                                  className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>Search
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div className={`w-full min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] py-2 flex gap-2 items-end justify-end mr-4`}>
+                  <Link href={`https://wisetap.co.uk/pages/frequently-asked-questions`}>
+                      <div className={`text-gray-800 hover:text-blue-600`}>
+                          Help
+                      </div>
+                  </Link>
+                  <Link href={`https://wisetap.co.uk/policies/privacy-policy`}>
+                      <div className={`text-gray-800 hover:text-blue-600`}>
+                          Privacy
+                      </div>
+                  </Link>
+                  <Link href={`https://wisetap.co.uk/policies/terms-of-service`}>
+                      <div className={`text-gray-800 hover:text-blue-600`}>
+                          Terms
+                      </div>
+                  </Link>
+              </div>
+          </div>
+
+
+          {/* MOBILE */}
+
+          <div className={`md:hidden flex flex-col items-center justify-between h-screen`}>
+              <div className={`w-full bg-white p-8 rounded-xl flex flex-col gap-8`}>
+                  <div>
+                      <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
+                             className="dark:invert" width={100} height={24} priority/>
+                  </div>
+                  <div className={`flex flex-col gap-4`}>
+                      <div className={`flex flex-col gap-4`}>
+                          <h1 className={`text-xl font-semibold`}>Edit Link to Your Review Page</h1>
+                          <div className={`flex flex-col`}>
+                          </div>
+                      </div>
+                      <div className={`flex flex-col justify-start items-start`}>
+                          <div className="w-full">
+                              <div className="text-field w100p w-full">
+                                  <input
+                                      className="text-base w100p w-full"
+                                      type="text"
+                                      required
+                                      placeholder=" "
+                                      value={code}
+                                      onChange={e => setCode(e.target.value)}
+                                  />
+                                  <span>WiseTap code</span>
+                              </div>
+                          </div>
+                      </div>
+                      <div>
+                          <button
+                              onClick={(e) => handleSubmit(e)}
+                              className={`w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl`}>Search
+                          </button>
+                      </div>
+                  </div>
+              </div>
+              <div className={`py-4 flex gap-2 items-end justify-end`}>
+                  <Link href={`https://wisetap.co.uk/pages/frequently-asked-questions`}>
+                      <div className={`text-gray-800 hover:text-blue-600`}>
+                          Help
+                      </div>
+                  </Link>
+                  <Link href={`https://wisetap.co.uk/policies/privacy-policy`}>
+                      <div className={`text-gray-800 hover:text-blue-600`}>
+                          Privacy
+                      </div>
+                  </Link>
+                  <Link href={`https://wisetap.co.uk/policies/terms-of-service`}>
+                      <div className={`text-gray-800 hover:text-blue-600`}>
+                          Terms
+                      </div>
+                  </Link>
+              </div>
+          </div>
+      </>
   );
 }

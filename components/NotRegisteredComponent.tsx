@@ -169,7 +169,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                         {activeStage === `stage1` && (
                             <>
                                 <div className={`flex flex-col gap-4 justify-center items-start`}>
-                                    <h1 className={`text-3xl font-semibold text-center `}>Create a Wisetap Account</h1>
+                                    <h1 className={`text-3xl font-semibold`}>Create a Wisetap Account</h1>
                                     <div className={`w-full md:w-3/5`}>
                                         {`Looks like it's your first time using WiseTap 🎉. Please enter your name to continue.`}
                                     </div>
@@ -288,8 +288,7 @@ export default function NotRegisteredComponent({id, callHandleRedirectRegister}:
                         </div>
                     </div>
                 </div>
-                <div
-                    className={`w-full min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] py-2 flex gap-2 items-end justify-end mr-4`}>
+                <div className={`w-full min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] py-2 flex gap-2 items-end justify-end mr-4`}>
                     <Link href={`https://wisetap.co.uk/pages/frequently-asked-questions`}>
                         <div className={`text-gray-800 hover:text-blue-600`}>
                             Help

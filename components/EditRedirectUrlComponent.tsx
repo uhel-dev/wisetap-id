@@ -136,15 +136,15 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
             <div
                 className={`hidden md:flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-slate-200 to-slate-100`}>
                 <div
-                    className={`bg-white p-8 rounded-xl min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] flex flex-col gap-8`}>
+                    className={`bg-white p-8 rounded-xl min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px]  flex flex-col gap-8`}>
                     <div>
                         <Image src="/wise-tap-rectangle-logo-black-no-padding.svg" alt="WiseTap Logo"
                                className="dark:invert" width={100} height={24} priority/>
                     </div>
                     <div className={`grid grid-cols-2 gap-4`}>
                         <div className={`flex flex-col gap-4 justify-start items-start`}>
-                            <h1 className={`text-3xl font-semibold text-center `}>Link to Your Review Page</h1>
-                            <p className={`text-center`}>Your current link: <span className={`text-blue-600`}><Link
+                            <h1 className={`text-3xl font-semibold `}>Edit Link to Your Review Page</h1>
+                            <p className={``}>Your current link: <span className={`text-blue-600`}><Link
                                 href={assignedUrl}>{assignedUrl}</Link></span></p>
                         </div>
                         <div className={`flex flex-col justify-center items-start`}>
@@ -158,7 +158,7 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
                                         value={redirectUrl}
                                         onChange={e => setRedirectUrl(e.target.value)}
                                     />
-                                    <span>Email address</span>
+                                    <span>Review link</span>
                                 </div>
                             </div>
                         </div>
@@ -178,8 +178,7 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
                         </div>
                     </div>
                 </div>
-                <div
-                    className={`min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] py-2 flex gap-2 items-end justify-end mr-4`}>
+                <div className={`w-full min-w-[480px] md:min-w-[780px] xl:min-w-[1040px] xl:max-w-[1280px] py-2 flex gap-2 items-end justify-end mr-4`}>
                     <Link href={`https://wisetap.co.uk/pages/frequently-asked-questions`}>
                         <div className={`text-gray-800 hover:text-blue-600`}>
                             Help
@@ -228,7 +227,7 @@ export default function EditRedirectUrlComponent({id, callDisableEditMode, assig
                                         value={redirectUrl}
                                         onChange={e => setRedirectUrl(e.target.value)}
                                     />
-                                    <span>Email address</span>
+                                    <span>Review link</span>
                                 </div>
                             </div>
                         </div>

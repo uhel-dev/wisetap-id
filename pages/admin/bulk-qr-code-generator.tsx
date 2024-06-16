@@ -1,4 +1,4 @@
-import './../app/globals.css'
+import '../../app/globals.css'
 
 import React, {useState} from "react";
 import { useQRCode } from "next-qrcode";
@@ -126,7 +126,7 @@ export default function BulkQrCodeGenerator() {
                     </Link>
 
                     <Link
-                        href="/create-qr-code"
+                        href="/admin/create-qr-code"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
                     >
@@ -143,7 +143,7 @@ export default function BulkQrCodeGenerator() {
                     </Link>
 
                     <Link
-                        href="/list-qr-codes"
+                        href="/admin/list-qr-codes"
                         className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
                         rel="noopener noreferrer"
                     >
